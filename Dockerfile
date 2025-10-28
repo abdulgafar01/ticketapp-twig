@@ -1,20 +1,30 @@
-# 1️⃣ Use an official lightweight PHP image
+# Use the official PHP-Apache image
 FROM php:8.2-apache
 
-# 2️⃣ Install required PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
+# Install system dependencies
+RUN apt-get update && apt-get install -y unzip git && rm -rf /var/lib/apt/lists/*
 
-# 3️⃣ Enable Apache mod_rewrite (useful if you have clean URLs later)
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# 4️⃣ Copy your project into the Apache web directory
+# Copy app source code to Apache web directory
 COPY . /var/www/html/
 
-# 5️⃣ Set working directory
+# Change working directory to the public folder
 WORKDIR /var/www/html/public
 
-# 6️⃣ Expose port 80
+# Update Apache document root to /var/www/html/public
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# Install PHP dependencies (Composer)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose port 80
 EXPOSE 80
 
-# 7️⃣ Start Apache
+# Start Apache
 CMD ["apache2-foreground"]
