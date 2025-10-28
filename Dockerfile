@@ -1,30 +1,35 @@
-# Use the official PHP-Apache image
+# 1️⃣ Use the official PHP-Apache image
 FROM php:8.2-apache
 
-# Install system dependencies
+# 2️⃣ Install system dependencies
 RUN apt-get update && apt-get install -y unzip git && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
+# 3️⃣ Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Copy app source code to Apache web directory
+# 4️⃣ Copy Composer from official image
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# 5️⃣ Copy the entire app to Apache web directory
 COPY . /var/www/html/
 
-# Change working directory to the public folder
-WORKDIR /var/www/html/public
+# 6️⃣ Set working directory to project root (not /public yet)
+WORKDIR /var/www/html
 
-# Update Apache document root to /var/www/html/public
+# 7️⃣ Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader || true
+
+# 8️⃣ Change Apache document root to /var/www/html/public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Install PHP dependencies (Composer)
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader
+# 9️⃣ Ensure Apache can serve index.php
+RUN echo "DirectoryIndex index.php" >> /etc/apache2/apache2.conf
 
-# Set permissions
+# 🔟 Set file permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose port 80
+# 1️⃣1️⃣ Expose port 80
 EXPOSE 80
 
-# Start Apache
+# 1️⃣2️⃣ Start Apache
 CMD ["apache2-foreground"]
