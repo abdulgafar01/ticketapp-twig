@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title ?? 'TicketApp' }}</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <a href="/index.php" class="logo">TicketApp</a>
+    </div>
+
+    <div class="nav-right">
+      {% if session.user %}
+        <span class="welcome">Hi, {{ session.user.name }}</span>
+        <a href="/logout.php" class="nav-link">Logout</a>
+      {% else %}
+        <a href="/login.php" class="nav-link">Login</a>
+        <a href="/signup.php" class="nav-link">Signup</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 TicketApp — All Rights Reserved.</p>
+  </footer>
+</body>
+</html>

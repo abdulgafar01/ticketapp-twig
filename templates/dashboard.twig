@@ -1,0 +1,52 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+  <main class="dashboard">
+    <h1>Ticket Dashboard</h1>
+
+    <section class="add-ticket">
+      <h2>Add a New Ticket</h2>
+      <form method="POST">
+        <input type="hidden" name="action" value="add">
+        <input type="text" name="title" placeholder="Title" required>
+        <textarea name="description" placeholder="Description" required></textarea>
+        <button type="submit">Add Ticket</button>
+      </form>
+    </section>
+
+    <section class="ticket-list">
+      <h2>Your Tickets</h2>
+
+      {% if tickets is not empty %}
+        <ul class="tickets">
+          {% for ticket in tickets %}
+            <li class="ticket-card">
+              <h3>{{ ticket.title }}</h3>
+              <p>{{ ticket.description }}</p>
+              <p>Status: <strong>{{ ticket.status }}</strong></p>
+
+              <form method="POST" class="ticket-actions">
+                <input type="hidden" name="id" value="{{ ticket.id }}">
+                <input type="hidden" name="action" value="update">
+                <select name="status">
+                  <option value="New" {% if ticket.status == 'New' %}selected{% endif %}>New</option>
+                  <option value="In Progress" {% if ticket.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                  <option value="Resolved" {% if ticket.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                </select>
+                <button type="submit">Update</button>
+              </form>
+
+              <form method="POST" class="delete-form">
+                <input type="hidden" name="id" value="{{ ticket.id }}">
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" class="delete-btn">Delete</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No tickets yet. Add one above!</p>
+      {% endif %}
+    </section>
+  </main>
+{% endblock %}
