@@ -1,7 +1,7 @@
 services:
   - type: web
     name: ticketapp-twig
-    env: php
+    env: docker
     plan: free
     region: oregon
     buildCommand: ""

@@ -1,0 +1,37 @@
+# Ignore local dependencies
+node_modules
+vendor
+
+# Ignore environment/config files
+.env
+.env.local
+.env.production
+
+# Ignore OS/system files
+.DS_Store
+Thumbs.db
+
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore IDE/editor files
+.vscode
+.idea
+*.swp
+
+# Ignore logs and cache
+logs
+*.log
+tmp
+cache
+
+# Ignore Render build artifacts
+render.yaml
+
+# Ignore tests (if any)
+tests
+__tests__
+
+# Ignore documentation
+README.md
